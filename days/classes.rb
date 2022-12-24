@@ -9,7 +9,9 @@ class DayNine
   def play!
     mark_tail_position!
 
-    read_file.each do |line|
+    File.open('input.txt').each do |raw_line|
+      line = raw_line.chomp
+
       direction = line.split(' ').first
       steps = line.split(' ').last
 
@@ -38,9 +40,14 @@ class DayNine
                end
 
     @head_position = [@head_position.first + movement.first, @head_position.last + movement.last]
+
+    if tail_must_move?
+      @tail_position = [@tail_position.first + movement.first, @tail_position.last + movement.last]
+    end
   end
 
   def mark_tail_position!
+    # value is irrelevant
     @turn_map[@tail_position.join(',')] = @tail_position
   end
 
@@ -51,7 +58,8 @@ class DayNine
     # [0,0] [2,0] YES
     # [0,0] [1,1] NOPE
     #
-    # [-1,-1] [1,1] NOPE
+    # [-1,-1] [1,1] YES
+    # [1,1] [-1,-1] YES
 
     return true if Math.abs(@head_position.first - @tail_position.first) > 1
     return true if Math.abs(@head_position.last - @tail_position.last) > 1
